@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	//"github.com/gin-gonic/gin/binding"
-	//"fmt"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -37,47 +37,45 @@ func find_string(sayt, word string) bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	content := string(robots)
+	var content = string(robots)
+	fmt.Println(content)
 	if strings.Contains(content, word) {
 		return true
 	}
 	return false
 }
-
+func send_str(sait_mass []string, word2 string) string {
+	len_mass := len(sait_mass)
+	for i := 0; i <= len_mass; i++ {
+		fmt.Println(sait_mass[i], word2)
+		if find_string(sait_mass[i], word2) {
+			fmt.Println("return mass")
+			return sait_mass[i]
+		}
+	}
+	fmt.Println("return non!!!")
+	return "non"
+}
 func main() { //1
 	router := gin.Default()
 	router.POST("/checkText", func(c *gin.Context) { //2
 		var json Request
 		var res Response
-		var sys_us System_user
+		//		var sys_us System_user
 		if c.BindJSON(&json) == nil { //3
-			sys_us.dlina = len(json.Site)        //смотрим сколько пришло сайтов
-			for i := 0; i <= sys_us.dlina; i++ { //4 цыкл количество сайтов
-				if find_string(json.Site[i], json.SearchText) { //5 ищем слово в сайте
-					res.FoundAtSite = json.Site[i]
-					c.JSON(200, gin.H{
-						"FoundAt11Site": res.FoundAtSite,
-					})
-					break
-					//res.FoundAtSite = append(res.FoundAtSite, json.Site[i]) //добавляем если найдено
-				} else {
-					c.JSON(204, gin.H{
-						"status": "No Content",
-					})
-
-				} //5
-			} //4
-			//			if res.FoundAtSite == "" { //6 если не пустое выводим данные
-			//				c.JSON(200, gin.H{
 			//					"FoundAt22Site": res.FoundAtSite,
-			//				})
-			//			} else { //в обратном случае ошибка
-			//				c.JSON(204, gin.H{
-			//					"status": "No vContent",
-			//				})
-			//			}
-		} //3
+			res.FoundAtSite = send_str(json.Site, json.SearchText)
+			fmt.Println(res.FoundAtSite, "this")
+			if res.FoundAtSite == "non" {
+				c.JSON(204, gin.H{
+					"status": "No Content",
+				})
+			} else {
+				c.JSON(200, gin.H{
+					"FoundAt11Site": res.FoundAtSite,
+				})
+			} //3
+		}
 	}) //2 end
-	// Listen and server on 0.0.0.0:8080
 	router.Run(":8080")
-} //1 end
+}
