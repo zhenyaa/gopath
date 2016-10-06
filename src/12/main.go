@@ -58,18 +58,24 @@ func main() { //1
 					c.JSON(200, gin.H{
 						"FoundAt11Site": res.FoundAtSite,
 					})
+					break
 					//res.FoundAtSite = append(res.FoundAtSite, json.Site[i]) //добавляем если найдено
+				} else {
+					c.JSON(204, gin.H{
+						"status": "No Content",
+					})
+
 				} //5
 			} //4
-			if res.FoundAtSite == "" { //6 если не пустое выводим данные
-				c.JSON(200, gin.H{
-					"FoundAt22Site": res.FoundAtSite,
-				})
-			} else { //в обратном случае ошибка
-				c.JSON(204, gin.H{
-					"status": "No Content",
-				})
-			}
+			//			if res.FoundAtSite == "" { //6 если не пустое выводим данные
+			//				c.JSON(200, gin.H{
+			//					"FoundAt22Site": res.FoundAtSite,
+			//				})
+			//			} else { //в обратном случае ошибка
+			//				c.JSON(204, gin.H{
+			//					"status": "No vContent",
+			//				})
+			//			}
 		} //3
 	}) //2 end
 	// Listen and server on 0.0.0.0:8080
